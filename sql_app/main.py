@@ -22,12 +22,12 @@ def get_db():
         db.close()
 
 
-@app.post('/accesslogs/', response_model=schemas.AccessLog, status_code=201)
+@app.post('/accesslogs', response_model=schemas.AccessLog, status_code=201)
 def create_accesslog(log: schemas.AccessLog, db: Session = Depends(get_db)):
     return crud.create_accesslog(db, log=log)
 
 
-@app.get('/accesslogs/', response_model=List[schemas.AccessLog])
+@app.get('/accesslogs', response_model=List[schemas.AccessLog])
 def read_accesslogs(
     begin: datetime = None, end: datetime = None,
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
@@ -40,7 +40,7 @@ def read_accesslogs(
     return logs
 
 
-@app.get('/room/', response_model=List[schemas.InRoomUser])
+@app.get('/room', response_model=List[schemas.InRoomUser])
 def read_inroomusers(db: Session = Depends(get_db)):
     return crud.get_inroomusers(db)
 
@@ -54,7 +54,7 @@ def read_inroomuser(parsed_id: int, db: Session = Depends(get_db)):
     return user
 
 
-@app.post('/room/', response_model=schemas.InRoomUser, status_code=201)
+@app.post('/room', response_model=schemas.InRoomUser, status_code=201)
 def create_inroomuser(user: schemas.InRoomUserBase, db: Session = Depends(get_db)):
     try:
         db_user = crud.create_inroomuser(db, user=user)
