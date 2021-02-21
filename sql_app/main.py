@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import Response
 
-from . import crud, models, schemas
+from . import boushitsu, crud, models, schemas
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -23,6 +23,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@app.on_event('startup')
+def setup_beebotte():
+    boushitsu.setup_beebotte()
 
 
 @app.post('/accesslogs', response_model=schemas.AccessLog, status_code=status.HTTP_201_CREATED)
@@ -84,4 +89,5 @@ def delete_and_move_inroomuser(parsed_id: int, db: Session = Depends(get_db)):
 
     crud.create_accesslog(db, log=log)  # 2. paste
     crud.delete_inroomuser(db, user=user)  # 3. delele
-    return Response(status_code=status.HTTP_204_NO_CONTENT)  # content-length: 0
+    # content-length: 0
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
