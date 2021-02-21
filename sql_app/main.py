@@ -17,7 +17,7 @@ app = FastAPI()
 
 
 def get_db():
-    """Dependency"""
+    '''Dependency'''
     db = SessionLocal()
     try:
         yield db
@@ -26,7 +26,7 @@ def get_db():
 
 
 @app.on_event('startup')
-def setup_beebotte():
+def startup():
     boushitsu.setup_beebotte()
 
 
@@ -74,11 +74,11 @@ def create_inroomuser(user: schemas.InRoomUserBase, db: Session = Depends(get_db
 
 @app.delete('/room/{parsed_id}', response_model=None)
 def delete_and_move_inroomuser(parsed_id: int, db: Session = Depends(get_db)):
-    """
+    '''
     1. copy
     2. paste
     3. delete
-    """
+    '''
     user = crud.get_inroomuser(db, user_id=parsed_id)  # 1. copy
     if user is None:
         raise HTTPException(
@@ -89,5 +89,4 @@ def delete_and_move_inroomuser(parsed_id: int, db: Session = Depends(get_db)):
 
     crud.create_accesslog(db, log=log)  # 2. paste
     crud.delete_inroomuser(db, user=user)  # 3. delele
-    # content-length: 0
     return Response(status_code=status.HTTP_204_NO_CONTENT)
